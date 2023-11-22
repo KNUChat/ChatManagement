@@ -13,7 +13,7 @@ public class ChatMessageService {
 
     public void saveChatMessage(KafkaMessage kafkaMessage){
         chatMessageRepository.save(ChatMessage.builder()
-                .chatMessageId(kafkaMessage.getRoomId())
+                .roomId(kafkaMessage.getRoomId())
                 .senderId(kafkaMessage.getSenderId())
                 .receiverId(kafkaMessage.getReceiverId())
                 .sendTime(kafkaMessage.getSendTime())
