@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class KafkaService {
     private final ChatMessageService chatMessageService;
     @KafkaListener(topics = "chatlog")
-    public void test( KafkaMessage kafkaMessage){
+    public void getKafkaMessage( KafkaMessage kafkaMessage){
         log.info("Kafka Message : " + String.valueOf(kafkaMessage));
         chatMessageService.saveChatMessage(kafkaMessage);
     }
