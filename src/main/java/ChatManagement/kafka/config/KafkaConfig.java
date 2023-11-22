@@ -1,6 +1,6 @@
 package ChatManagement.kafka.config;
 
-import ChatManagement.kafka.domain.ChatMessage;
+import ChatManagement.kafka.domain.KafkaMessage;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -42,7 +42,7 @@ public class KafkaConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 이부분
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, ChatMessage.class);
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, KafkaMessage.class);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

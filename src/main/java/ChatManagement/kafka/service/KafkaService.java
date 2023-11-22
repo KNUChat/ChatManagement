@@ -1,6 +1,6 @@
 package ChatManagement.kafka.service;
 
-import ChatManagement.kafka.domain.ChatMessage;
+import ChatManagement.kafka.domain.KafkaMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class KafkaService {
 
     @KafkaListener(topics = "chatlog")
-    public void test( ChatMessage chatMessage){
-        log.info(String.valueOf(chatMessage));
+    public void test( KafkaMessage kafkaMessage){
+        log.info(String.valueOf(kafkaMessage));
     }
 }

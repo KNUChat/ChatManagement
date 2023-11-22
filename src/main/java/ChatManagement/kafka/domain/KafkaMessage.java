@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ChatMessage  {
+public class KafkaMessage {
     private Long roomId;
     private Long senderId;
     private Long receiverId;
