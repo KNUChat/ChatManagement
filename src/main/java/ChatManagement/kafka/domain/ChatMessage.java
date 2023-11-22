@@ -1,4 +1,4 @@
-package ChatManagement.domain;
+package ChatManagement.kafka.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

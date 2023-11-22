@@ -1,6 +1,6 @@
-package ChatManagement.config;
+package ChatManagement.kafka.config;
 
-import ChatManagement.domain.ChatMessage;
+import ChatManagement.kafka.domain.ChatMessage;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
