@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatRoomService {
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatMessageRepository chatMessageRepository;
+    private final ChatMessageService chatMessageService;
 
     @Transactional
     public Long reserve(ChatRoomRequest request){
@@ -26,7 +26,7 @@ public class ChatRoomService {
                 .roomStatus(RoomStatus.CHAT_WAITING)
                 .build());
         log.info("saved chatRoom: " + chatRoom.toString());
-        chatMessageRepository.save(ChatMessage.builder()
+        chatMessageService.saveChatMessage(ChatMessage.builder()
                 .receiverId(request.getMentorId())
                 .senderId(request.getMenteeId())
                 .roomId(chatRoom.getRoomId())

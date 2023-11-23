@@ -20,4 +20,8 @@ public class ChatMessageService {
                 .message(kafkaMessage.getMessage())
                 .build());
     }
+
+    public void saveChatMessage(ChatMessage chatMessage){
+        chatMessageRepository.save(chatMessage);
+    }
 }
