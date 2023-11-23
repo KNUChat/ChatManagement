@@ -3,6 +3,7 @@ package ChatManagement.chat.service;
 import ChatManagement.chat.dao.ChatMessage;
 import ChatManagement.chat.repository.ChatMessageRepository;
 import ChatManagement.kafka.domain.KafkaMessage;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,14 @@ public class ChatMessageService {
 
     public void saveChatMessage(ChatMessage chatMessage){
         chatMessageRepository.save(chatMessage);
+    }
+
+    public void activateChatMessage(Long roomId){
+        List<ChatMessage> chatMessages = chatMessageRepository.findChatMessagesByRoomId(roomId);
+        for(ChatMessage chatMessage: chatMessages){
+            if(chatMessage.getSendTime() == null){
+                chatMessage.activateMessage();
+            }
+        }
     }
 }

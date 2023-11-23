@@ -47,6 +47,8 @@ public class ChatRoomService {
             activateChatRoomIndex < Math.min(10 -processingChatRooms.size(), waitingChatRooms.size());
             activateChatRoomIndex++){
             waitingChatRooms.get(activateChatRoomIndex).activateRoom();
+            chatMessageService.activateChatMessage(
+                    waitingChatRooms.get(activateChatRoomIndex).getRoomId());
             log.info("activated chatRoom : " + waitingChatRooms.get(activateChatRoomIndex));
         }
     }

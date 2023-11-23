@@ -25,6 +25,11 @@ public class ChatMessage {
     private Long senderId;
     private Long receiverId;
     private String message;
+
+    public void activateMessage() {
+        this.sendTime = LocalDateTime.now();
+    }
+
     private LocalDateTime sendTime;
 
 }
