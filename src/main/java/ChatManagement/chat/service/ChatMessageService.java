@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
-    public void saveChatMessage(KafkaMessage kafkaMessage){
+    public void saveKafkaMessage(KafkaMessage kafkaMessage){
         chatMessageRepository.save(ChatMessage.builder()
                 .roomId(kafkaMessage.getRoomId())
                 .senderId(kafkaMessage.getSenderId())
