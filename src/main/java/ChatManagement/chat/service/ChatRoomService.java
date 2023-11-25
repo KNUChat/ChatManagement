@@ -3,14 +3,15 @@ package ChatManagement.chat.service;
 import ChatManagement.chat.dao.ChatMessage;
 import ChatManagement.chat.dao.ChatRoom;
 import ChatManagement.chat.dao.RoomStatus;
-import ChatManagement.chat.repository.ChatMessageRepository;
 import ChatManagement.chat.repository.ChatRoomRepository;
 import ChatManagement.chat.request.ChatRoomRequest;
-import jakarta.transaction.Transactional;
+import ChatManagement.chat.response.ChatRoomResponse;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j @Service
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class ChatRoomService {
                 .mentorId(request.getMentorId())
                 .roomStatus(RoomStatus.CHAT_WAITING)
                 .build());
-        log.info("saved chatRoom: " + chatRoom.toString());
+        log.info("saved chatRoom: " + chatRoom);
         chatMessageService.saveChatMessage(ChatMessage.builder()
                 .receiverId(request.getMentorId())
                 .senderId(request.getMenteeId())
@@ -53,4 +54,12 @@ public class ChatRoomService {
         }
     }
 
+    @Transactional(readOnly=true)
+    public List<ChatRoomResponse> getChatRoomById(Long id) {
+        return chatRoomRepository
+                .findChatRoomsByParticipantId(id)
+                .stream()
+                .map(ChatRoomResponse::from)
+                .collect(Collectors.toUnmodifiableList());
+    }
 }
