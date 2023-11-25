@@ -2,10 +2,14 @@ package ChatManagement.chat.service;
 
 import ChatManagement.chat.dao.ChatMessage;
 import ChatManagement.chat.repository.ChatMessageRepository;
+import ChatManagement.chat.response.ChatMessageResponse;
+import ChatManagement.chat.response.ChatRoomResponse;
 import ChatManagement.kafka.domain.KafkaMessage;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +37,14 @@ public class ChatMessageService {
                 chatMessage.activateMessage();
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<ChatMessageResponse> getAllMessageById(Long roomId){
+        return chatMessageRepository
+                .findChatMessagesByRoomId(roomId)
+                .stream()
+                .map(ChatMessageResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 }
