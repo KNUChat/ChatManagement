@@ -206,3 +206,4 @@ gradle-app.setting
 # SECRET CODE
 /src/main/resources/application-kafka.properties
 /src/main/resources/application-database.properties
+Dockerfile
