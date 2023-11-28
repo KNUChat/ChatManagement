@@ -11,12 +11,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter @Builder
 public class ChatRoomResponse {
+    private Long roomId;
     private Long mentorId;
     private Long menteeId;
     private RoomStatus roomStatus;
 
     public static ChatRoomResponse from(ChatRoom chatRoom){
         return ChatRoomResponse.builder()
+                .roomId(chatRoom.getRoomId())
                 .menteeId(chatRoom.getMenteeId())
                 .mentorId(chatRoom.getMentorId())
                 .roomStatus(chatRoom.getRoomStatus())
