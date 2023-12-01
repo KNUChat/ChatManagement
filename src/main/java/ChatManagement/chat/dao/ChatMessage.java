@@ -5,6 +5,8 @@ import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,11 +22,13 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatMessageId;
 
-    private Long roomId;
-
     private Long senderId;
     private Long receiverId;
     private String message;
+
+    @ManyToOne
+    @JoinColumn(name = "roomId")
+    private ChatRoom chatRoom;
 
     public void activateMessage() {
         this.sendTime = LocalDateTime.now();

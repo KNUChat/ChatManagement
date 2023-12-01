@@ -1,5 +1,6 @@
 package ChatManagement.chat.dao;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -32,8 +33,7 @@ public class ChatRoom {
     @Enumerated(EnumType.STRING)
     private RoomStatus roomStatus;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomId")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private List<ChatMessage> chatMessages;
 
     public void activateRoom(){
