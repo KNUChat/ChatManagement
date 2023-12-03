@@ -1,4 +1,4 @@
-package ChatManagement.chat.dao;
+package ChatManagement.global.status;
 
 public enum RoomStatus {
     CHAT_WAITING,
