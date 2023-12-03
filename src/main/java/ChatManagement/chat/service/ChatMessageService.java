@@ -6,13 +6,17 @@ import ChatManagement.chat.repository.ChatMessageRepository;
 import ChatManagement.chat.repository.ChatRoomRepository;
 import ChatManagement.chat.request.ChatRoomRequest;
 import ChatManagement.chat.response.ChatMessageResponse;
+import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.kafka.domain.KafkaMessage;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.common.quota.ClientQuotaAlteration.Op;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException.NotFound;
 
 @Service
 @RequiredArgsConstructor
@@ -53,7 +57,11 @@ public class ChatMessageService {
 
     @Transactional(readOnly = true)
     public List<ChatMessageResponse> getAllMessageById(Long roomId){
-        return chatRoomRepository.findById(roomId)
+        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        if(chatRoom.isEmpty()){
+            throw new NotFoundChatRoomException();
+        }
+        return chatRoom
                 .get().getChatMessages()
                 .stream()
                 .map(ChatMessageResponse::from)
