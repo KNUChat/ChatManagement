@@ -1,7 +1,6 @@
 package ChatManagement.chat.dao;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,6 +25,7 @@ public class ChatMessage {
     private Long receiverId;
     private String message;
 
+
     @ManyToOne
     @JoinColumn(name = "roomId")
     private ChatRoom chatRoom;
@@ -36,4 +36,21 @@ public class ChatMessage {
 
     private LocalDateTime sendTime;
 
+
+    public void setChatRoom(ChatRoom chatRoom) {
+        if(this.chatRoom == null){
+            this.chatRoom = chatRoom;
+        }
+    }
+    @Override
+    public String toString() {
+        return "ChatMessage{" +
+                "chatMessageId=" + chatMessageId +
+                ", senderId=" + senderId +
+                ", receiverId=" + receiverId +
+                ", message='" + message + '\'' +
+                ", chatRoom=" + chatRoom.getRoomId() +
+                ", sendTime=" + sendTime +
+                '}';
+    }
 }
