@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ChatManagementExceptionHandler {
 
     @ExceptionHandler(ChatManagementException.class)
-    public ResponseEntity<ErrorResponse> handleChatManagementException(ChatManagementException e) {
+    public ResponseEntity<ErrorResponse> handleChatManagementException(
+            ChatManagementException e) {
         log.info("Exception check    : " + e.getMessage());
         return ResponseEntity
                 .status(e.getHttpStatus())
@@ -23,7 +24,8 @@ public class ChatManagementExceptionHandler {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<ErrorResponse> requestParamException(HttpMessageNotReadableException e){
+    public ResponseEntity<ErrorResponse> requestParamException(
+            HttpMessageNotReadableException e){
         log.info("Exception check  : " + e.getMessage());
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
