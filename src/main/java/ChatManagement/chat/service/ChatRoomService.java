@@ -1,18 +1,15 @@
 package ChatManagement.chat.service;
 
-import ChatManagement.chat.dao.ChatMessage;
 import ChatManagement.chat.dao.ChatRoom;
-import ChatManagement.chat.dao.RoomStatus;
+import ChatManagement.global.status.RoomStatus;
 import ChatManagement.chat.repository.ChatRoomRepository;
 import ChatManagement.chat.request.ChatRoomRequest;
 import ChatManagement.chat.response.ChatRoomResponse;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j @Service

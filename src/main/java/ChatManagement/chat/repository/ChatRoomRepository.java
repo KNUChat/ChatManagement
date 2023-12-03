@@ -1,7 +1,7 @@
 package ChatManagement.chat.repository;
 
 import ChatManagement.chat.dao.ChatRoom;
-import ChatManagement.chat.dao.RoomStatus;
+import ChatManagement.global.status.RoomStatus;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
