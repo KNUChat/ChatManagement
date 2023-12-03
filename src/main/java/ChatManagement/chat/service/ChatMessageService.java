@@ -1,37 +1,49 @@
 package ChatManagement.chat.service;
 
 import ChatManagement.chat.dao.ChatMessage;
+import ChatManagement.chat.dao.ChatRoom;
 import ChatManagement.chat.repository.ChatMessageRepository;
+import ChatManagement.chat.repository.ChatRoomRepository;
+import ChatManagement.chat.request.ChatRoomRequest;
 import ChatManagement.chat.response.ChatMessageResponse;
-import ChatManagement.chat.response.ChatRoomResponse;
 import ChatManagement.kafka.domain.KafkaMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
-
+    private final ChatRoomRepository chatRoomRepository;
     public void saveKafkaMessage(KafkaMessage kafkaMessage){
         chatMessageRepository.save(ChatMessage.builder()
-                .roomId(kafkaMessage.getRoomId())
+                .chatRoom(
+                        chatRoomRepository.findChatRoomsByRoomId(kafkaMessage.getRoomId())
+                )
                 .senderId(kafkaMessage.getSenderId())
                 .receiverId(kafkaMessage.getReceiverId())
                 .sendTime(kafkaMessage.getSendTime())
                 .message(kafkaMessage.getMessage())
                 .build());
     }
-
-    public void saveChatMessage(ChatMessage chatMessage){
-        chatMessageRepository.save(chatMessage);
+    @Transactional
+    public void reserve(ChatRoomRequest request, ChatRoom chatRoom){
+        ChatMessage savedMessage = chatMessageRepository.save(ChatMessage.builder()
+                        .receiverId(request.getMentorId())
+                        .senderId(request.getMenteeId())
+                        .message(request.getMessage())
+                        .sendTime(null)
+                        .build());
+        chatRoom.initChatMessage(savedMessage);
+        log.info("save chatMessage: " + savedMessage);
     }
 
-    public void activateChatMessage(Long roomId){
-        List<ChatMessage> chatMessages = chatMessageRepository.findChatMessagesByRoomId(roomId);
+    public void activateChatMessage(List<ChatMessage> chatMessages){
         for(ChatMessage chatMessage: chatMessages){
             if(chatMessage.getSendTime() == null){
                 chatMessage.activateMessage();
@@ -41,8 +53,8 @@ public class ChatMessageService {
 
     @Transactional(readOnly = true)
     public List<ChatMessageResponse> getAllMessageById(Long roomId){
-        return chatMessageRepository
-                .findChatMessagesByRoomId(roomId)
+        return chatRoomRepository.findById(roomId)
+                .get().getChatMessages()
                 .stream()
                 .map(ChatMessageResponse::from)
                 .collect(Collectors.toUnmodifiableList());

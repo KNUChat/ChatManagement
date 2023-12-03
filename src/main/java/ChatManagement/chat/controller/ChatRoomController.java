@@ -33,10 +33,9 @@ public class ChatRoomController {
             @RequestBody ChatRoomRequest request
     ){
         log.info(request.toString());
-        Long mentorId = chatRoomService.reserve(request);
-
-        chatRoomService.activateChatRoom(mentorId);
-        return null;
+        chatMessageService.reserve(request, chatRoomService.reserve(request));
+        chatRoomService.activateChatRoom(request.getMentorId());
+        return ResponseEntity.ok(true);
     }
 
     @GetMapping

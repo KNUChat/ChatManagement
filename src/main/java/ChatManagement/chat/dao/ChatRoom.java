@@ -7,8 +7,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,13 +34,20 @@ public class ChatRoom {
     @Enumerated(EnumType.STRING)
     private RoomStatus roomStatus;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "roomId")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "chatRoom")
     private List<ChatMessage> chatMessages;
 
     public void activateRoom(){
         if(this.roomStatus.equals(RoomStatus.CHAT_WAITING)){
             this.roomStatus = RoomStatus.CHAT_PROCEEDING;
         }
+    }
+
+    public void initChatMessage(ChatMessage chatMessage) {
+        if (this.chatMessages == null) {
+            this.chatMessages = new ArrayList<>();
+        }
+        chatMessages.add(chatMessage);
+        chatMessage.setChatRoom(this);
     }
 }
