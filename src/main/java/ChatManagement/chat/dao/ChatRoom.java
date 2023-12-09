@@ -42,6 +42,17 @@ public class ChatRoom {
         }
     }
 
+    public void endRoom() {
+        if(this.roomStatus.equals(RoomStatus.CHAT_PROCEEDING)){
+            this.roomStatus = RoomStatus.CHAT_ENDED;
+        }
+    }
+
+    public void blockRoom(){
+        this.roomStatus = RoomStatus.CHAT_BLOCKED;
+    }
+
+
     public void initChatMessage(ChatMessage chatMessage) {
         if (this.chatMessages == null) {
             this.chatMessages = new ArrayList<>();
