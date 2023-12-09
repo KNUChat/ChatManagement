@@ -1,6 +1,7 @@
 package ChatManagement.chat.controller;
 
 import ChatManagement.chat.dao.ChatMessage;
+import ChatManagement.chat.request.ChatRoomPatchRequest;
 import ChatManagement.chat.request.ChatRoomRequest;
 import ChatManagement.chat.response.ChatMessageResponse;
 import ChatManagement.chat.response.ChatRoomResponse;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -45,6 +47,16 @@ public class ChatRoomController {
         List<ChatRoomResponse> responses = chatRoomService.getChatRoomById(id);
         return ResponseEntity.ok(responses);
     }
+
+    @PatchMapping("/{roomId}")
+    public ResponseEntity<ChatRoomResponse> changeRoomStatus(
+            @PathVariable Long roomId,
+            @RequestBody ChatRoomPatchRequest chatRoomPatchRequest){
+        ChatRoomResponse response = chatRoomService.changeStatus(chatRoomPatchRequest);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     @GetMapping("/{roomId}/logs")
     public ResponseEntity<List<ChatMessageResponse>> getChatMessage(

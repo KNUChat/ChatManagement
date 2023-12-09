@@ -1,6 +1,8 @@
 package ChatManagement.chat.service;
 
 import ChatManagement.chat.dao.ChatRoom;
+import ChatManagement.chat.request.ChatRoomPatchRequest;
+import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.global.status.RoomStatus;
 import ChatManagement.chat.repository.ChatRoomRepository;
 import ChatManagement.chat.request.ChatRoomRequest;
@@ -47,6 +49,21 @@ public class ChatRoomService {
                     waitingChatRooms.get(activateChatRoomIndex).getChatMessages());
             log.info("activated chatRoom : " + waitingChatRooms.get(activateChatRoomIndex));
         }
+    }
+
+    @Transactional
+    public ChatRoomResponse changeStatus
+            (ChatRoomPatchRequest chatRoomPatchRequest){
+        ChatRoom chatRoom =
+                chatRoomRepository.findChatRoomByRoomId(chatRoomPatchRequest.getRoomId());
+        if(chatRoom == null){
+            throw new NotFoundChatRoomException();
+        }
+        if(chatRoomPatchRequest.getRoomStatus() == RoomStatus.CHAT_ENDED){
+            chatRoom.endRoom();
+        }
+        return ChatRoomResponse.from(chatRoom);
+
     }
 
     @Transactional(readOnly=true)
