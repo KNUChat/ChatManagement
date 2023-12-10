@@ -3,6 +3,7 @@ package ChatManagement.kafka.config;
 import ChatManagement.kafka.domain.KafkaMessage;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.KafkaListenerErrorHandler;
+import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+import org.springframework.messaging.MessageHeaders;
 
 @Configuration
+@Slf4j
 @PropertySource("classpath:application-kafka.properties")
 public class KafkaConfig {
     @Value("${spring.kafka.bootstrap-servers}")
@@ -46,4 +51,17 @@ public class KafkaConfig {
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
+    @Bean
+    public KafkaListenerErrorHandler kafkaListenerErrorHandler(){
+        return (message, exception) -> {
+            MessageHeaders headers = message.getHeaders();
+            String topic = headers.get(KafkaHeaders.RECEIVED_TOPIC, String.class);
+            Long offset = headers.get(KafkaHeaders.OFFSET, Long.class);
+
+            log.info("Error in Listener at topic: " + topic + ", partition: "  + ", offset: " + offset);
+            log.info("Error: " + exception.getMessage());
+
+            return null;
+        };
+    }
 }

@@ -1,17 +1,14 @@
 package ChatManagement.chat.controller;
 
-import ChatManagement.chat.dao.ChatMessage;
 import ChatManagement.chat.request.ChatRoomPatchRequest;
 import ChatManagement.chat.request.ChatRoomRequest;
 import ChatManagement.chat.response.ChatMessageResponse;
 import ChatManagement.chat.response.ChatRoomResponse;
 import ChatManagement.chat.service.ChatMessageService;
 import ChatManagement.chat.service.ChatRoomService;
-import jakarta.websocket.server.PathParam;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

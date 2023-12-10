@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaService {
     private final ChatMessageService chatMessageService;
-    @KafkaListener(topics = "chatlog")
+    @KafkaListener(topics = "chatlog", errorHandler = "kafkaListenerErrorHandler")
     public void getKafkaMessage( KafkaMessage kafkaMessage){
         log.info("Kafka Message : " + kafkaMessage);
 
