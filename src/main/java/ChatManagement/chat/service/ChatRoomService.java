@@ -1,7 +1,6 @@
 package ChatManagement.chat.service;
 
 import ChatManagement.chat.dao.ChatRoom;
-import ChatManagement.chat.request.ChatRoomPatchRequest;
 import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.global.status.RoomStatus;
 import ChatManagement.chat.repository.ChatRoomRepository;
