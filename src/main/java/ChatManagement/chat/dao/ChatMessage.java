@@ -1,6 +1,9 @@
 package ChatManagement.chat.dao;
 
+import ChatManagement.global.status.ChatMessageType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -30,13 +33,14 @@ public class ChatMessage {
     @JoinColumn(name = "roomId")
     private ChatRoom chatRoom;
 
+    private LocalDateTime sendTime;
+
+    @Enumerated(EnumType.STRING)
+    private ChatMessageType chatMessageType;
+
     public void activateMessage() {
         this.sendTime = LocalDateTime.now();
     }
-
-    private LocalDateTime sendTime;
-
-
     public void setChatRoom(ChatRoom chatRoom) {
         if(this.chatRoom == null){
             this.chatRoom = chatRoom;

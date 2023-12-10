@@ -13,7 +13,8 @@ public class KafkaService {
     private final ChatMessageService chatMessageService;
     @KafkaListener(topics = "chatlog")
     public void getKafkaMessage( KafkaMessage kafkaMessage){
-        log.info("Kafka Message : " + String.valueOf(kafkaMessage));
+        log.info("Kafka Message : " + kafkaMessage);
+
         chatMessageService.saveKafkaMessage(kafkaMessage);
     }
 }
