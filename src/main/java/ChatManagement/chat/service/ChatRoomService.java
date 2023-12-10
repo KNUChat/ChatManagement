@@ -52,16 +52,27 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public ChatRoomResponse changeStatus
-            (ChatRoomPatchRequest chatRoomPatchRequest){
+    public ChatRoomResponse endRoom
+            (Long roomId){
         ChatRoom chatRoom =
-                chatRoomRepository.findChatRoomByRoomId(chatRoomPatchRequest.getRoomId());
+                chatRoomRepository.findChatRoomByRoomId(roomId);
         if(chatRoom == null){
             throw new NotFoundChatRoomException();
         }
-        if(chatRoomPatchRequest.getRoomStatus() == RoomStatus.CHAT_ENDED){
-            chatRoom.endRoom();
+        chatRoom.endRoom();
+        return ChatRoomResponse.from(chatRoom);
+
+    }
+
+    @Transactional
+    public ChatRoomResponse deleteRoom
+            (Long roomId){
+        ChatRoom chatRoom =
+                chatRoomRepository.findChatRoomByRoomId(roomId);
+        if(chatRoom == null){
+            throw new NotFoundChatRoomException();
         }
+        chatRoom.deleteRoom();
         return ChatRoomResponse.from(chatRoom);
 
     }
