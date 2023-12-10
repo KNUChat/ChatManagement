@@ -31,6 +31,7 @@ public class ChatMessageService {
                 .receiverId(kafkaMessage.getReceiverId())
                 .sendTime(kafkaMessage.getSendTime())
                 .message(kafkaMessage.getMessage())
+                .chatMessageType(kafkaMessage.getChatMessageType())
                 .build());
     }
     @Transactional

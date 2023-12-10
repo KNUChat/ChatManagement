@@ -1,5 +1,6 @@
 package ChatManagement.kafka.domain;
 
+import ChatManagement.global.status.ChatMessageType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,4 +15,5 @@ public class KafkaMessage {
     private Long receiverId;
     private String message;
     private LocalDateTime sendTime;
+    private ChatMessageType chatMessageType;
 }
