@@ -1,5 +1,6 @@
 package ChatManagement.chat.dao;
 
+import ChatManagement.global.execption.NotAllowChangeRoomStatusException;
 import ChatManagement.global.status.RoomStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,6 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.http.HttpStatus;
 
 @Entity @Getter
 @Builder @ToString
@@ -46,6 +48,15 @@ public class ChatRoom {
         if(this.roomStatus.equals(RoomStatus.CHAT_PROCEEDING)){
             this.roomStatus = RoomStatus.CHAT_ENDED;
         }
+        throw new NotAllowChangeRoomStatusException("[Status ERROR] 채팅방을 종료할 수 없습니다", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    public void deleteRoom() {
+        if(this.roomStatus.equals(RoomStatus.CHAT_ENDED)){
+            this.roomStatus = RoomStatus.CHAT_DELETED;
+        }
+
+        throw new NotAllowChangeRoomStatusException("[Status ERROR] 채팅방을 삭제할 수 없습니다", HttpStatus.NOT_ACCEPTABLE);
     }
 
     public void blockRoom(){
@@ -60,4 +71,5 @@ public class ChatRoom {
         chatMessages.add(chatMessage);
         chatMessage.setChatRoom(this);
     }
+
 }

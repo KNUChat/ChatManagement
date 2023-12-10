@@ -45,12 +45,18 @@ public class ChatRoomController {
         return ResponseEntity.ok(responses);
     }
 
-    @PatchMapping("/{roomId}")
-    public ResponseEntity<ChatRoomResponse> changeRoomStatus(
-            @PathVariable Long roomId,
-            @RequestBody ChatRoomPatchRequest chatRoomPatchRequest){
-        ChatRoomResponse response = chatRoomService.changeStatus(chatRoomPatchRequest);
+    @PatchMapping("/end/{roomId}")
+    public ResponseEntity<ChatRoomResponse> endRoom(
+            @PathVariable Long roomId){
+        ChatRoomResponse response = chatRoomService.endRoom(roomId);
+        chatRoomService.activateChatRoom(response.getMentorId());
+        return ResponseEntity.ok(response);
+    }
 
+    @PatchMapping("/delete/{roomId}")
+    public ResponseEntity<ChatRoomResponse> deleteRoom(
+            @PathVariable Long roomId){
+        ChatRoomResponse response = chatRoomService.deleteRoom(roomId);
         return ResponseEntity.ok(response);
     }
 
