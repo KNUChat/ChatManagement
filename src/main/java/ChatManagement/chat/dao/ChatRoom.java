@@ -47,13 +47,16 @@ public class ChatRoom {
     public void endRoom() {
         if(this.roomStatus.equals(RoomStatus.CHAT_PROCEEDING)){
             this.roomStatus = RoomStatus.CHAT_ENDED;
+            return;
         }
         throw new NotAllowChangeRoomStatusException("[Status ERROR] 채팅방을 종료할 수 없습니다", HttpStatus.NOT_ACCEPTABLE);
     }
 
     public void deleteRoom() {
-        if(this.roomStatus.equals(RoomStatus.CHAT_ENDED)){
+        if(this.roomStatus.equals(RoomStatus.CHAT_ENDED)
+                || this.roomStatus.equals(RoomStatus.CHAT_WAITING)){
             this.roomStatus = RoomStatus.CHAT_DELETED;
+            return;
         }
 
         throw new NotAllowChangeRoomStatusException("[Status ERROR] 채팅방을 삭제할 수 없습니다", HttpStatus.NOT_ACCEPTABLE);
