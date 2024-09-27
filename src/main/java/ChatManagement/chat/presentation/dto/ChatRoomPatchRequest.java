@@ -1,6 +1,6 @@
-package ChatManagement.chat.request;
+package ChatManagement.chat.presentation.dto;
 
-import ChatManagement.global.status.RoomStatus;
+import ChatManagement.chat.domain.status.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

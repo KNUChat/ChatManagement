@@ -1,6 +1,6 @@
-package ChatManagement.kafka.domain;
+package ChatManagement.kafka.service.dto;
 
-import ChatManagement.kafka.type.LogType;
+import ChatManagement.kafka.service.dto.type.LogType;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

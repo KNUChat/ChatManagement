@@ -1,4 +1,4 @@
-package ChatManagement.chat.request;
+package ChatManagement.chat.presentation.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

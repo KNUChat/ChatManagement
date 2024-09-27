@@ -1,6 +1,6 @@
-package ChatManagement.kafka.domain;
+package ChatManagement.kafka.service.dto;
 
-import ChatManagement.global.status.ChatMessageType;
+import ChatManagement.chat.domain.status.ChatMessageType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;

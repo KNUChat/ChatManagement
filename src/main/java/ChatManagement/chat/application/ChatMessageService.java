@@ -1,17 +1,16 @@
-package ChatManagement.chat.service;
+package ChatManagement.chat.application;
 
-import ChatManagement.chat.dao.ChatMessage;
-import ChatManagement.chat.dao.ChatRoom;
+import ChatManagement.chat.domain.ChatMessage;
+import ChatManagement.chat.domain.ChatRoom;
 import ChatManagement.chat.repository.ChatMessageRepository;
 import ChatManagement.chat.repository.ChatRoomRepository;
-import ChatManagement.chat.request.ChatRoomRequest;
-import ChatManagement.chat.response.ChatMessageResponse;
+import ChatManagement.chat.presentation.dto.ChatRoomRequest;
+import ChatManagement.chat.presentation.dto.ChatMessageResponse;
 import ChatManagement.global.execption.NotFoundChatRoomException;
-import ChatManagement.kafka.domain.KafkaMessage;
-import ChatManagement.kafka.domain.LogMessage;
+import ChatManagement.kafka.service.dto.KafkaMessage;
+import ChatManagement.kafka.service.dto.LogMessage;
 import ChatManagement.kafka.service.KafkaService;
-import ChatManagement.kafka.type.LogType;
-import java.time.Instant;
+import ChatManagement.kafka.service.dto.type.LogType;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;

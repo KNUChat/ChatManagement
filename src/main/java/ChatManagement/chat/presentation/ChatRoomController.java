@@ -1,11 +1,10 @@
-package ChatManagement.chat.controller;
+package ChatManagement.chat.presentation;
 
-import ChatManagement.chat.request.ChatRoomPatchRequest;
-import ChatManagement.chat.request.ChatRoomRequest;
-import ChatManagement.chat.response.ChatMessageResponse;
-import ChatManagement.chat.response.ChatRoomResponse;
-import ChatManagement.chat.service.ChatMessageService;
-import ChatManagement.chat.service.ChatRoomService;
+import ChatManagement.chat.presentation.dto.ChatRoomRequest;
+import ChatManagement.chat.presentation.dto.ChatMessageResponse;
+import ChatManagement.chat.presentation.dto.ChatRoomResponse;
+import ChatManagement.chat.application.ChatMessageService;
+import ChatManagement.chat.application.ChatRoomService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

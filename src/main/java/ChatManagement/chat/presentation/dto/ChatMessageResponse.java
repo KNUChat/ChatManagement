@@ -1,8 +1,8 @@
-package ChatManagement.chat.response;
+package ChatManagement.chat.presentation.dto;
 
 
-import ChatManagement.chat.dao.ChatMessage;
-import ChatManagement.global.status.ChatMessageType;
+import ChatManagement.chat.domain.ChatMessage;
+import ChatManagement.chat.domain.status.ChatMessageType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

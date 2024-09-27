@@ -1,6 +1,6 @@
-package ChatManagement.chat.dao;
+package ChatManagement.chat.domain;
 
-import ChatManagement.global.status.ChatMessageType;
+import ChatManagement.chat.domain.status.ChatMessageType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

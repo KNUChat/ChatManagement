@@ -1,11 +1,11 @@
-package ChatManagement.chat.service;
+package ChatManagement.chat.application;
 
-import ChatManagement.chat.dao.ChatRoom;
+import ChatManagement.chat.domain.ChatRoom;
 import ChatManagement.global.execption.NotFoundChatRoomException;
-import ChatManagement.global.status.RoomStatus;
+import ChatManagement.chat.domain.status.RoomStatus;
 import ChatManagement.chat.repository.ChatRoomRepository;
-import ChatManagement.chat.request.ChatRoomRequest;
-import ChatManagement.chat.response.ChatRoomResponse;
+import ChatManagement.chat.presentation.dto.ChatRoomRequest;
+import ChatManagement.chat.presentation.dto.ChatRoomResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;

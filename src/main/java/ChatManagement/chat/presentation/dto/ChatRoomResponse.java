@@ -1,7 +1,7 @@
-package ChatManagement.chat.response;
+package ChatManagement.chat.presentation.dto;
 
-import ChatManagement.chat.dao.ChatRoom;
-import ChatManagement.global.status.RoomStatus;
+import ChatManagement.chat.domain.ChatRoom;
+import ChatManagement.chat.domain.status.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package ChatManagement.kafka.config;
 
-import ChatManagement.kafka.domain.KafkaMessage;
+import ChatManagement.kafka.service.dto.KafkaMessage;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;

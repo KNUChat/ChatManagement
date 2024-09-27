@@ -1,4 +1,4 @@
-package ChatManagement.global.status;
+package ChatManagement.chat.domain.status;
 
 public enum RoomStatus {
     CHAT_WAITING,

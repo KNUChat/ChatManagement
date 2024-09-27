@@ -1,4 +1,4 @@
-package ChatManagement.global.status;
+package ChatManagement.chat.domain.status;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

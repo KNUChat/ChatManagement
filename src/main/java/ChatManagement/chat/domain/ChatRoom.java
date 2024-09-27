@@ -1,7 +1,7 @@
-package ChatManagement.chat.dao;
+package ChatManagement.chat.domain;
 
 import ChatManagement.global.execption.NotAllowChangeRoomStatusException;
-import ChatManagement.global.status.RoomStatus;
+import ChatManagement.chat.domain.status.RoomStatus;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
