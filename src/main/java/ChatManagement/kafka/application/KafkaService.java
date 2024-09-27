@@ -1,6 +1,6 @@
-package ChatManagement.kafka.service;
+package ChatManagement.kafka.application;
 
-import ChatManagement.kafka.service.dto.LogMessage;
+import ChatManagement.kafka.application.dto.LogMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;

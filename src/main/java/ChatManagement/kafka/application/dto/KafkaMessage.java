@@ -1,4 +1,4 @@
-package ChatManagement.kafka.service.dto;
+package ChatManagement.kafka.application.dto;
 
 import ChatManagement.chat.domain.status.ChatMessageType;
 import java.time.LocalDateTime;
