@@ -1,4 +1,4 @@
-package ChatManagement.chat.repository;
+package ChatManagement.chat.persistence;
 
 import ChatManagement.chat.domain.ChatMessage;
 import org.springframework.data.jpa.repository.JpaRepository;

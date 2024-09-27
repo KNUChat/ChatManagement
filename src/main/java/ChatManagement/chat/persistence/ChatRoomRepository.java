@@ -1,4 +1,4 @@
-package ChatManagement.chat.repository;
+package ChatManagement.chat.persistence;
 
 import ChatManagement.chat.domain.ChatRoom;
 import ChatManagement.chat.domain.status.RoomStatus;

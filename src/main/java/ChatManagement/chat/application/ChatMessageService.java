@@ -2,8 +2,8 @@ package ChatManagement.chat.application;
 
 import ChatManagement.chat.domain.ChatMessage;
 import ChatManagement.chat.domain.ChatRoom;
-import ChatManagement.chat.repository.ChatMessageRepository;
-import ChatManagement.chat.repository.ChatRoomRepository;
+import ChatManagement.chat.persistence.ChatMessageRepository;
+import ChatManagement.chat.persistence.ChatRoomRepository;
 import ChatManagement.chat.presentation.dto.ChatRoomRequest;
 import ChatManagement.chat.presentation.dto.ChatMessageResponse;
 import ChatManagement.global.execption.NotFoundChatRoomException;

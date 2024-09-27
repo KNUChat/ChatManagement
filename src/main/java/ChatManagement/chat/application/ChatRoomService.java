@@ -3,7 +3,7 @@ package ChatManagement.chat.application;
 import ChatManagement.chat.domain.ChatRoom;
 import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.chat.domain.status.RoomStatus;
-import ChatManagement.chat.repository.ChatRoomRepository;
+import ChatManagement.chat.persistence.ChatRoomRepository;
 import ChatManagement.chat.presentation.dto.ChatRoomRequest;
 import ChatManagement.chat.presentation.dto.ChatRoomResponse;
 import java.util.List;
