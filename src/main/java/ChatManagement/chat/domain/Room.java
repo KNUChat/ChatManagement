@@ -23,7 +23,7 @@ import org.springframework.http.HttpStatus;
 @Builder @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class ChatRoom {
+public class Room {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class ChatRoom {
     private RoomStatus roomStatus;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "chatRoom")
-    private List<ChatMessage> chatMessages;
+    private List<Message> messages;
 
     public void activateRoom(){
         if(this.roomStatus.equals(RoomStatus.CHAT_WAITING)){
@@ -67,12 +67,11 @@ public class ChatRoom {
     }
 
 
-    public void initChatMessage(ChatMessage chatMessage) {
-        if (this.chatMessages == null) {
-            this.chatMessages = new ArrayList<>();
+    public void initChatMessage(Message message) {
+        if (this.messages == null) {
+            this.messages = new ArrayList<>();
         }
-        chatMessages.add(chatMessage);
-        chatMessage.setChatRoom(this);
+        messages.add(message);
+        message.setRoom(this);
     }
-
 }

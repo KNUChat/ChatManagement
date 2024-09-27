@@ -1,6 +1,6 @@
 package ChatManagement.chat.presentation.dto;
 
-import ChatManagement.chat.domain.ChatRoom;
+import ChatManagement.chat.domain.Room;
 import ChatManagement.chat.domain.status.RoomStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,12 +16,12 @@ public class ChatRoomResponse {
     private Long menteeId;
     private RoomStatus roomStatus;
 
-    public static ChatRoomResponse from(ChatRoom chatRoom){
+    public static ChatRoomResponse from(Room room){
         return ChatRoomResponse.builder()
-                .roomId(chatRoom.getRoomId())
-                .menteeId(chatRoom.getMenteeId())
-                .mentorId(chatRoom.getMentorId())
-                .roomStatus(chatRoom.getRoomStatus())
+                .roomId(room.getRoomId())
+                .menteeId(room.getMenteeId())
+                .mentorId(room.getMentorId())
+                .roomStatus(room.getRoomStatus())
                 .build();
     }
 }

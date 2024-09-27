@@ -1,7 +1,7 @@
 package ChatManagement.chat.application;
 
-import ChatManagement.chat.domain.ChatMessage;
-import ChatManagement.chat.domain.ChatRoom;
+import ChatManagement.chat.domain.Message;
+import ChatManagement.chat.domain.Room;
 import ChatManagement.chat.persistence.ChatMessageRepository;
 import ChatManagement.chat.persistence.ChatRoomRepository;
 import ChatManagement.chat.presentation.dto.ChatRoomRequest;
@@ -32,63 +32,63 @@ public class ChatMessageService {
     @Transactional
     @KafkaListener(topics = "chatlog", errorHandler = "kafkaListenerErrorHandler")
     public void saveKafkaMessage(KafkaMessage kafkaMessage){
-        ChatRoom chatRoom = chatRoomRepository.findChatRoomByRoomId(kafkaMessage.getRoomId());
-        if(chatRoom == null){
+        Room room = chatRoomRepository.findChatRoomByRoomId(kafkaMessage.getRoomId());
+        if(room == null){
             throw new NotFoundChatRoomException();
         }
-        ChatMessage chatMessage = chatMessageRepository.save(ChatMessage.builder()
-                .chatRoom(chatRoom)
+        Message message = chatMessageRepository.save(Message.builder()
+                .room(room)
                 .senderId(kafkaMessage.getSenderId())
                 .receiverId(kafkaMessage.getReceiverId())
                 .sendTime(kafkaMessage.getSendTime())
                 .message(kafkaMessage.getMessage())
                 .chatMessageType(kafkaMessage.getChatMessageType())
                 .build());
-        sendLogInfo(chatRoom, chatMessage);
+        sendLogInfo(room, message);
     }
     @Transactional
-    public void reserve(ChatRoomRequest request, ChatRoom chatRoom){
-        ChatMessage savedMessage = chatMessageRepository.save(ChatMessage.builder()
+    public void reserve(ChatRoomRequest request, Room room){
+        Message savedMessage = chatMessageRepository.save(Message.builder()
                         .receiverId(request.getMentorId())
                         .senderId(request.getMenteeId())
                         .message(request.getMessage())
                         .sendTime(null)
                         .build());
-        chatRoom.initChatMessage(savedMessage);
+        room.initChatMessage(savedMessage);
         log.info("save chatMessage: " + savedMessage);
-        sendLogInfo(chatRoom, savedMessage);
+        sendLogInfo(room, savedMessage);
     }
 
-    public void activateChatMessage(List<ChatMessage> chatMessages){
-        for(ChatMessage chatMessage: chatMessages){
-            if(chatMessage.getSendTime() == null){
-                chatMessage.activateMessage();
+    public void activateChatMessage(List<Message> messages){
+        for(Message message : messages){
+            if(message.getSendTime() == null){
+                message.activateMessage();
             }
         }
     }
 
     @Transactional(readOnly = true)
     public List<ChatMessageResponse> getAllMessageById(Long roomId){
-        Optional<ChatRoom> chatRoom = chatRoomRepository.findById(roomId);
+        Optional<Room> chatRoom = chatRoomRepository.findById(roomId);
         if(chatRoom.isEmpty()){
             throw new NotFoundChatRoomException();
         }
         return chatRoom
-                .get().getChatMessages()
+                .get().getMessages()
                 .stream()
                 .map(ChatMessageResponse::from)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private void sendLogInfo(ChatRoom chatRoom, ChatMessage chatMessage){
+    private void sendLogInfo(Room room, Message message){
         kafkaService.sendMessage(
                 LogMessage.builder()
-                        .roomId(chatRoom.getRoomId())
-                        .logMessage("Saved Message : " + chatMessage.getMessage())
+                        .roomId(room.getRoomId())
+                        .logMessage("Saved Message : " + message.getMessage())
                         .service("Chat-Management")
                         .type(LogType.INFO)
                         .time(new Date())
-                        .userId(chatMessage.getSenderId())
+                        .userId(message.getSenderId())
                         .build()
         );
     }

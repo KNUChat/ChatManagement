@@ -1,7 +1,7 @@
 package ChatManagement.chat.presentation.dto;
 
 
-import ChatManagement.chat.domain.ChatMessage;
+import ChatManagement.chat.domain.Message;
 import ChatManagement.chat.domain.status.ChatMessageType;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -20,13 +20,13 @@ public class ChatMessageResponse {
     private ChatMessageType chatMessageType;
     private LocalDateTime sendTime;
 
-    public static ChatMessageResponse from(ChatMessage chatMessage){
+    public static ChatMessageResponse from(Message message){
         return ChatMessageResponse.builder()
-                .message(chatMessage.getMessage())
-                .senderId(chatMessage.getSenderId())
-                .receiverId(chatMessage.getReceiverId())
-                .chatMessageType(chatMessage.getChatMessageType())
-                .sendTime(chatMessage.getSendTime())
+                .message(message.getMessage())
+                .senderId(message.getSenderId())
+                .receiverId(message.getReceiverId())
+                .chatMessageType(message.getChatMessageType())
+                .sendTime(message.getSendTime())
                 .build();
     }
 }

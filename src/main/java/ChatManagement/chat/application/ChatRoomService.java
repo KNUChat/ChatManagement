@@ -1,6 +1,6 @@
 package ChatManagement.chat.application;
 
-import ChatManagement.chat.domain.ChatRoom;
+import ChatManagement.chat.domain.Room;
 import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.chat.domain.status.RoomStatus;
 import ChatManagement.chat.persistence.ChatRoomRepository;
@@ -20,59 +20,59 @@ public class ChatRoomService {
     private final ChatMessageService chatMessageService;
 
     @Transactional
-    public ChatRoom reserve(ChatRoomRequest request){
-        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
+    public Room reserve(ChatRoomRequest request){
+        Room room = chatRoomRepository.save(Room.builder()
                 .menteeId(request.getMenteeId())
                 .mentorId(request.getMentorId())
                 .roomStatus(RoomStatus.CHAT_WAITING)
                 .build());
-        log.info("saved chatRoom: " + chatRoom);
+        log.info("saved chatRoom: " + room);
 
-        return chatRoom;
+        return room;
     }
 
     @Transactional
     public void activateChatRoom(Long mentorId){
-        List<ChatRoom> processingChatRooms = chatRoomRepository
+        List<Room> processingRooms = chatRoomRepository
                 .findChatRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_PROCEEDING);
-        log.info("Processing Chat Room: " + processingChatRooms);
-        List<ChatRoom> waitingChatRooms = chatRoomRepository
+        log.info("Processing Chat Room: " + processingRooms);
+        List<Room> waitingRooms = chatRoomRepository
                 .findChatRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_WAITING);
 
         for(int activateChatRoomIndex = 0;
-            activateChatRoomIndex < Math.min(10 -processingChatRooms.size(), waitingChatRooms.size());
+            activateChatRoomIndex < Math.min(10 - processingRooms.size(), waitingRooms.size());
             activateChatRoomIndex++){
 
-            waitingChatRooms.get(activateChatRoomIndex).activateRoom();
+            waitingRooms.get(activateChatRoomIndex).activateRoom();
             chatMessageService.activateChatMessage(
-                    waitingChatRooms.get(activateChatRoomIndex).getChatMessages());
-            log.info("activated chatRoom : " + waitingChatRooms.get(activateChatRoomIndex));
+                    waitingRooms.get(activateChatRoomIndex).getMessages());
+            log.info("activated chatRoom : " + waitingRooms.get(activateChatRoomIndex));
         }
     }
 
     @Transactional
     public ChatRoomResponse endRoom
             (Long roomId){
-        ChatRoom chatRoom =
+        Room room =
                 chatRoomRepository.findChatRoomByRoomId(roomId);
-        if(chatRoom == null){
+        if(room == null){
             throw new NotFoundChatRoomException();
         }
-        chatRoom.endRoom();
-        return ChatRoomResponse.from(chatRoom);
+        room.endRoom();
+        return ChatRoomResponse.from(room);
 
     }
 
     @Transactional
     public ChatRoomResponse deleteRoom
             (Long roomId){
-        ChatRoom chatRoom =
+        Room room =
                 chatRoomRepository.findChatRoomByRoomId(roomId);
-        if(chatRoom == null){
+        if(room == null){
             throw new NotFoundChatRoomException();
         }
-        chatRoom.deleteRoom();
-        return ChatRoomResponse.from(chatRoom);
+        room.deleteRoom();
+        return ChatRoomResponse.from(room);
 
     }
 

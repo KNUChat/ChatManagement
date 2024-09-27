@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ChatMessage {
+public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatMessageId;
@@ -31,7 +31,7 @@ public class ChatMessage {
 
     @ManyToOne
     @JoinColumn(name = "roomId")
-    private ChatRoom chatRoom;
+    private Room room;
 
     private LocalDateTime sendTime;
 
@@ -41,9 +41,9 @@ public class ChatMessage {
     public void activateMessage() {
         this.sendTime = LocalDateTime.now();
     }
-    public void setChatRoom(ChatRoom chatRoom) {
-        if(this.chatRoom == null){
-            this.chatRoom = chatRoom;
+    public void setRoom(Room room) {
+        if(this.room == null){
+            this.room = room;
         }
     }
     @Override
@@ -53,7 +53,7 @@ public class ChatMessage {
                 ", senderId=" + senderId +
                 ", receiverId=" + receiverId +
                 ", message='" + message + '\'' +
-                ", chatRoom=" + chatRoom.getRoomId() +
+                ", chatRoom=" + room.getRoomId() +
                 ", sendTime=" + sendTime +
                 '}';
     }
