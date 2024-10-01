@@ -9,6 +9,8 @@ import ChatManagement.chat.domain.status.RoomStatus;
 import ChatManagement.chat.persistence.ChatMessageRepository;
 import ChatManagement.chat.persistence.ChatRoomRepository;
 import ChatManagement.global.execption.NotFoundChatRoomException;
+import ChatManagement.kafka.application.LogProducer;
+import ChatManagement.kafka.application.dto.LogMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class ChatRoomService {
     private static final int MAX_PROCESSING_ROOMS = 10;
     private final ChatRoomRepository chatRoomRepository;
     private final ChatMessageRepository chatMessageRepository;
+    private final LogProducer logProducer;
 
     @Transactional
     public RoomInfo reserve(CreateRoomCommand command) {
@@ -41,9 +44,11 @@ public class ChatRoomService {
     public void sendMessage(CreateMessageCommand command) {
         chatMessageRepository.findById(command.roomId())
                 .orElseThrow(NotFoundChatRoomException::new);
-        
+
         var message = command.toEntity();
         chatMessageRepository.save(message);
+        logProducer.sendMessage(
+                LogMessage.messageLogOf(message.getMessage(), message.getRoomId(), message.getSenderId()));
     }
 
     @Transactional

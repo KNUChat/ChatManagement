@@ -2,21 +2,16 @@ package ChatManagement.kafka.application.dto;
 
 import ChatManagement.kafka.application.dto.type.LogType;
 import java.util.Date;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-@Getter
-public class LogMessage {
-    private Date time;
-    private String service;
-    private LogType type;
-    private String logMessage;
-    private Long roomId;
-    private Long userId;
-
+public record LogMessage(
+        Date time,
+        String service,
+        LogType type,
+        String logMessage,
+        Long roomId,
+        Long userId
+) {
+    public static LogMessage messageLogOf(String chatMessage, Long roomId, Long senderId) {
+        return new LogMessage(new Date(), "Chat-Management", LogType.INFO, chatMessage, roomId, senderId);
+    }
 }
