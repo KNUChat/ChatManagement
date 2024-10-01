@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class KafkaConsumer {
+public class ChatMessageConsumer {
     private final ChatRoomService chatRoomService;
 
     @KafkaListener(topics = "chatlog", errorHandler = "kafkaListenerErrorHandler")
