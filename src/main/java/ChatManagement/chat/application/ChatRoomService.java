@@ -83,7 +83,7 @@ public class ChatRoomService {
 
     @Transactional(readOnly = true)
     public List<MessageInfo> getAllMessageById(Long roomId) {
-        var messages = chatMessageRepository.findByRoomId(roomId);
+        var messages = chatMessageRepository.findByRoomIdOrderBySendTimeDesc(roomId);
         return messages.stream()
                 .map(MessageInfo::from)
                 .collect(Collectors.toList());
