@@ -1,87 +1,103 @@
 package ChatManagement.chat.application;
 
+import ChatManagement.chat.application.command.CreateMessageCommand;
+import ChatManagement.chat.application.command.CreateRoomCommand;
+import ChatManagement.chat.application.dto.MessageInfo;
+import ChatManagement.chat.application.dto.RoomInfo;
 import ChatManagement.chat.domain.Room;
-import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.chat.domain.status.RoomStatus;
+import ChatManagement.chat.persistence.ChatMessageRepository;
 import ChatManagement.chat.persistence.ChatRoomRepository;
-import ChatManagement.chat.presentation.dto.ChatRoomRequest;
-import ChatManagement.chat.presentation.dto.ChatRoomResponse;
+import ChatManagement.global.execption.NotFoundChatRoomException;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Slf4j @Service
+@Slf4j
+@Service
 @RequiredArgsConstructor
 public class ChatRoomService {
+    private static final int MAX_PROCESSING_ROOMS = 10;
     private final ChatRoomRepository chatRoomRepository;
-    private final ChatMessageService chatMessageService;
+    private final ChatMessageRepository chatMessageRepository;
 
     @Transactional
-    public Room reserve(ChatRoomRequest request){
-        Room room = chatRoomRepository.save(Room.builder()
-                .menteeId(request.getMenteeId())
-                .mentorId(request.getMentorId())
-                .roomStatus(RoomStatus.CHAT_WAITING)
-                .build());
-        log.info("saved chatRoom: " + room);
+    public RoomInfo reserve(CreateRoomCommand command) {
+        var room = Room.of(command.mentorId(), command.menteeId());
+        chatRoomRepository.save(room);
 
-        return room;
+        var message = command.toMessage(room.getRoomId());
+        chatMessageRepository.save(message);
+
+        this.activateChatRoom(command.mentorId());
+        return RoomInfo.from(room);
     }
 
     @Transactional
-    public void activateChatRoom(Long mentorId){
-        List<Room> processingRooms = chatRoomRepository
-                .findChatRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_PROCEEDING);
-        log.info("Processing Chat Room: " + processingRooms);
-        List<Room> waitingRooms = chatRoomRepository
-                .findChatRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_WAITING);
-
-        for(int activateChatRoomIndex = 0;
-            activateChatRoomIndex < Math.min(10 - processingRooms.size(), waitingRooms.size());
-            activateChatRoomIndex++){
-
-            waitingRooms.get(activateChatRoomIndex).activateRoom();
-            chatMessageService.activateChatMessage(
-                    waitingRooms.get(activateChatRoomIndex).getMessages());
-            log.info("activated chatRoom : " + waitingRooms.get(activateChatRoomIndex));
-        }
+    public void sendMessage(CreateMessageCommand command) {
+        chatMessageRepository.findById(command.roomId())
+                .orElseThrow(NotFoundChatRoomException::new);
+        
+        var message = command.toEntity();
+        chatMessageRepository.save(message);
     }
 
     @Transactional
-    public ChatRoomResponse endRoom
-            (Long roomId){
-        Room room =
-                chatRoomRepository.findChatRoomByRoomId(roomId);
-        if(room == null){
-            throw new NotFoundChatRoomException();
-        }
+    public RoomInfo endRoom(Long roomId) {
+        Room room = chatRoomRepository.findById(roomId)
+                .orElseThrow(NotFoundChatRoomException::new);
         room.endRoom();
-        return ChatRoomResponse.from(room);
+        this.activateChatRoom(room.getMentorId());
+
+        return RoomInfo.from(room);
 
     }
 
     @Transactional
-    public ChatRoomResponse deleteRoom
-            (Long roomId){
-        Room room =
-                chatRoomRepository.findChatRoomByRoomId(roomId);
-        if(room == null){
-            throw new NotFoundChatRoomException();
-        }
+    public RoomInfo deleteRoom(Long roomId) {
+        Room room = chatRoomRepository.findById(roomId)
+                .orElseThrow(NotFoundChatRoomException::new);
+
         room.deleteRoom();
-        return ChatRoomResponse.from(room);
+        return RoomInfo.from(room);
 
     }
 
-    @Transactional(readOnly=true)
-    public List<ChatRoomResponse> getChatRoomById(Long id) {
+    @Transactional(readOnly = true)
+    public List<RoomInfo> getChatRoomsByUserId(Long userId) {
         return chatRoomRepository
-                .findChatRoomsByParticipantId(id)
+                .findChatRoomsByParticipantId(userId)
                 .stream()
-                .map(ChatRoomResponse::from)
-                .collect(Collectors.toUnmodifiableList());
+                .map(RoomInfo::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<MessageInfo> getAllMessageById(Long roomId) {
+        var messages = chatMessageRepository.findByRoomId(roomId);
+        return messages.stream()
+                .map(MessageInfo::from)
+                .collect(Collectors.toList());
+    }
+
+
+    private void activateChatRoom(Long mentorId) {
+        var processingRoomsCount = chatRoomRepository
+                .countRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_PROCEEDING);
+        var activateCount = MAX_PROCESSING_ROOMS - processingRoomsCount;
+
+        if (activateCount <= 0) {
+            return;
+        }
+
+        var waitingRooms = chatRoomRepository
+                .findRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_WAITING, Pageable.ofSize(activateCount));
+        waitingRooms.forEach(Room::activateRoom);
+
+        //TODO: 메시지 전송 시간 변경
     }
 }
