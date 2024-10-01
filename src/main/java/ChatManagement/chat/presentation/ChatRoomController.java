@@ -1,10 +1,9 @@
 package ChatManagement.chat.presentation;
 
-import ChatManagement.chat.presentation.dto.ChatRoomRequest;
-import ChatManagement.chat.presentation.dto.ChatMessageResponse;
-import ChatManagement.chat.presentation.dto.ChatRoomResponse;
-import ChatManagement.chat.application.ChatMessageService;
 import ChatManagement.chat.application.ChatRoomService;
+import ChatManagement.chat.presentation.dto.ChatMessageResponse;
+import ChatManagement.chat.presentation.dto.ChatRoomRequest;
+import ChatManagement.chat.presentation.dto.ChatRoomResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,52 +18,54 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController @Slf4j
+@Slf4j
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/chat/room")
 public class ChatRoomController {
     private final ChatRoomService chatRoomService;
-    private final ChatMessageService chatMessageService;
 
     @PostMapping
-    public ResponseEntity<Boolean> reserve(
-            @RequestBody ChatRoomRequest request
-    ){
-        log.info(request.toString());
-        chatMessageService.reserve(request, chatRoomService.reserve(request));
-        chatRoomService.activateChatRoom(request.getMentorId());
+    public ResponseEntity<Boolean> reserve(@RequestBody ChatRoomRequest request) {
+        var command = request.toCommand();
+        chatRoomService.reserve(command);
+
         return ResponseEntity.ok(true);
     }
 
     @GetMapping
-    public ResponseEntity<List<ChatRoomResponse>> getChatRooms(
-            @RequestParam Long id
-    ){
-        List<ChatRoomResponse> responses = chatRoomService.getChatRoomById(id);
+    public ResponseEntity<List<ChatRoomResponse>> getChatRooms(@RequestParam Long id) {
+        var roomInfos = chatRoomService.getChatRoomsByUserId(id);
+        List<ChatRoomResponse> responses = roomInfos.stream()
+                .map(ChatRoomResponse::from)
+                .toList();
         return ResponseEntity.ok(responses);
     }
 
     @PatchMapping("/end/{roomId}")
-    public ResponseEntity<ChatRoomResponse> endRoom(
-            @PathVariable Long roomId){
-        ChatRoomResponse response = chatRoomService.endRoom(roomId);
-        chatRoomService.activateChatRoom(response.getMentorId());
+    public ResponseEntity<ChatRoomResponse> endRoom(@PathVariable Long roomId) {
+        var infos = chatRoomService.endRoom(roomId);
+
+        var response = ChatRoomResponse.from(infos);
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/delete/{roomId}")
-    public ResponseEntity<ChatRoomResponse> deleteRoom(
-            @PathVariable Long roomId){
-        ChatRoomResponse response = chatRoomService.deleteRoom(roomId);
+    public ResponseEntity<ChatRoomResponse> deleteRoom(@PathVariable Long roomId) {
+        var infos = chatRoomService.deleteRoom(roomId);
+
+        var response = ChatRoomResponse.from(infos);
         return ResponseEntity.ok(response);
     }
 
 
     @GetMapping("/{roomId}/logs")
-    public ResponseEntity<List<ChatMessageResponse>> getChatMessage(
-            @PathVariable Long roomId
-    ){
-        List<ChatMessageResponse> response = chatMessageService.getAllMessageById(roomId);
+    public ResponseEntity<List<ChatMessageResponse>> getChatMessage(@PathVariable Long roomId) {
+        var infos = chatRoomService.getAllMessageById(roomId);
+
+        var response = infos.stream()
+                .map(ChatMessageResponse::from)
+                .toList();
         return ResponseEntity.ok(response);
     }
 }
