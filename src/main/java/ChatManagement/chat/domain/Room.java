@@ -1,28 +1,21 @@
 package ChatManagement.chat.domain;
 
-import ChatManagement.global.execption.NotAllowChangeRoomStatusException;
 import ChatManagement.chat.domain.status.RoomStatus;
+import ChatManagement.global.execption.NotAllowChangeRoomStatusException;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
-@Entity @Getter
-@Builder @ToString
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Room {
 
     @Id
@@ -35,17 +28,24 @@ public class Room {
     @Enumerated(EnumType.STRING)
     private RoomStatus roomStatus;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "chatRoom")
-    private List<Message> messages;
+    private Room(Long mentorId, Long menteeId) {
+        this.mentorId = mentorId;
+        this.menteeId = menteeId;
+        this.roomStatus = RoomStatus.CHAT_WAITING;
+    }
 
-    public void activateRoom(){
-        if(this.roomStatus.equals(RoomStatus.CHAT_WAITING)){
+    public static Room of(Long mentorId, Long menteeId) {
+        return new Room(mentorId, menteeId);
+    }
+
+    public void activateRoom() {
+        if (this.roomStatus.equals(RoomStatus.CHAT_WAITING)) {
             this.roomStatus = RoomStatus.CHAT_PROCEEDING;
         }
     }
 
     public void endRoom() {
-        if(this.roomStatus.equals(RoomStatus.CHAT_PROCEEDING)){
+        if (this.roomStatus.equals(RoomStatus.CHAT_PROCEEDING)) {
             this.roomStatus = RoomStatus.CHAT_ENDED;
             return;
         }
@@ -53,8 +53,8 @@ public class Room {
     }
 
     public void deleteRoom() {
-        if(this.roomStatus.equals(RoomStatus.CHAT_ENDED)
-                || this.roomStatus.equals(RoomStatus.CHAT_WAITING)){
+        if (this.roomStatus.equals(RoomStatus.CHAT_ENDED)
+                || this.roomStatus.equals(RoomStatus.CHAT_WAITING)) {
             this.roomStatus = RoomStatus.CHAT_DELETED;
             return;
         }
@@ -62,16 +62,7 @@ public class Room {
         throw new NotAllowChangeRoomStatusException("[Status ERROR] 채팅방을 삭제할 수 없습니다", HttpStatus.NOT_ACCEPTABLE);
     }
 
-    public void blockRoom(){
+    public void blockRoom() {
         this.roomStatus = RoomStatus.CHAT_BLOCKED;
-    }
-
-
-    public void initChatMessage(Message message) {
-        if (this.messages == null) {
-            this.messages = new ArrayList<>();
-        }
-        messages.add(message);
-        message.setRoom(this);
     }
 }

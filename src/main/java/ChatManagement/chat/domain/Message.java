@@ -7,54 +7,57 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long chatMessageId;
 
     private Long senderId;
+
     private Long receiverId;
+
     private String message;
-
-
-    @ManyToOne
-    @JoinColumn(name = "roomId")
-    private Room room;
 
     private LocalDateTime sendTime;
 
     @Enumerated(EnumType.STRING)
     private ChatMessageType chatMessageType;
 
-    public void activateMessage() {
+    private Long roomId;
+
+    private Message(Long senderId, Long receiverId, String message, Long roomId) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.message = message;
+        this.roomId = roomId;
         this.sendTime = LocalDateTime.now();
+        this.chatMessageType = ChatMessageType.TEXT;
     }
-    public void setRoom(Room room) {
-        if(this.room == null){
-            this.room = room;
-        }
+
+    private Message(Long senderId, Long receiverId, String message, Long roomId, LocalDateTime sendTime,
+                    ChatMessageType chatMessageType) {
+        this.senderId = senderId;
+        this.receiverId = receiverId;
+        this.message = message;
+        this.roomId = roomId;
+        this.sendTime = sendTime;
+        this.chatMessageType = chatMessageType;
     }
-    @Override
-    public String toString() {
-        return "ChatMessage{" +
-                "chatMessageId=" + chatMessageId +
-                ", senderId=" + senderId +
-                ", receiverId=" + receiverId +
-                ", message='" + message + '\'' +
-                ", chatRoom=" + room.getRoomId() +
-                ", sendTime=" + sendTime +
-                '}';
+
+    public static Message of(Long senderId, Long receiverId, String message, Long roomId) {
+        return new Message(senderId, receiverId, message, roomId);
+    }
+
+    public static Message of(Long roomId, Long senderId, Long receiverId, String message, LocalDateTime sendTime,
+                             ChatMessageType chatMessageType) {
+        return new Message(senderId, receiverId, message, roomId, sendTime, chatMessageType);
     }
 }
