@@ -1,17 +1,13 @@
 package ChatManagement.chat.presentation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import ChatManagement.chat.application.command.CreateRoomCommand;
 
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@ToString
-public class ChatRoomRequest {
-    private Long mentorId;
-    private Long menteeId;
-    private String message;
-
+public record ChatRoomRequest(
+        Long mentorId,
+        Long menteeId,
+        String message
+) {
+    public CreateRoomCommand toCommand() {
+        return new CreateRoomCommand(mentorId, menteeId, message);
+    }
 }
