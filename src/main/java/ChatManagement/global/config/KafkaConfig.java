@@ -1,6 +1,6 @@
 package ChatManagement.global.config;
 
-import ChatManagement.kafka.application.dto.KafkaMessage;
+import ChatManagement.kafka.application.dto.ChatMessage;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -34,8 +34,9 @@ public class KafkaConfig {
 
     @Value("${spring.kafka.consumer.group-id}")
     private String consumerDefaultGroupId;
+
     @Bean
-    public ProducerFactory<Object, Object> producerFactory(){
+    public ProducerFactory<Object, Object> producerFactory() {
         Map<String, Object> props = new HashMap<>();
 
         //Customized
@@ -64,18 +65,18 @@ public class KafkaConfig {
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*"); // 이부분
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, "false");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, KafkaMessage.class);
+        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, ChatMessage.class);
         return new DefaultKafkaConsumerFactory<>(props);
     }
 
     @Bean
-    public KafkaListenerErrorHandler kafkaListenerErrorHandler(){
+    public KafkaListenerErrorHandler kafkaListenerErrorHandler() {
         return (message, exception) -> {
             MessageHeaders headers = message.getHeaders();
             String topic = headers.get(KafkaHeaders.RECEIVED_TOPIC, String.class);
             Long offset = headers.get(KafkaHeaders.OFFSET, Long.class);
 
-            log.info("Error in Listener at topic: " + topic + ", partition: "  + ", offset: " + offset);
+            log.info("Error in Listener at topic: " + topic + ", partition: " + ", offset: " + offset);
             log.info("Error: " + exception.getMessage());
 
             return null;
