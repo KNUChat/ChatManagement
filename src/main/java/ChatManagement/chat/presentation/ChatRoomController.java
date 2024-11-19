@@ -7,6 +7,8 @@ import ChatManagement.chat.presentation.dto.ChatRoomResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -60,8 +62,9 @@ public class ChatRoomController {
 
 
     @GetMapping("/{roomId}/logs")
-    public ResponseEntity<List<ChatMessageResponse>> getChatMessage(@PathVariable Long roomId) {
-        var infos = chatRoomService.getAllMessageById(roomId);
+    public ResponseEntity<List<ChatMessageResponse>> getChatMessage(@PathVariable Long roomId,
+                                                                    @PageableDefault(size = 10) Pageable pageable) {
+        var infos = chatRoomService.getAllMessageById(roomId, pageable);
 
         var response = infos.stream()
                 .map(ChatMessageResponse::from)

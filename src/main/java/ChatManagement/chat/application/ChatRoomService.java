@@ -42,9 +42,6 @@ public class ChatRoomService {
 
     @Transactional
     public void sendMessage(CreateMessageCommand command) {
-        chatMessageRepository.findById(command.roomId())
-                .orElseThrow(NotFoundChatRoomException::new);
-
         var message = command.toEntity();
         chatMessageRepository.save(message);
         logProducer.sendMessage(
@@ -82,9 +79,9 @@ public class ChatRoomService {
     }
 
     @Transactional(readOnly = true)
-    public List<MessageInfo> getAllMessageById(Long roomId) {
-        var messages = chatMessageRepository.findByRoomIdOrderBySendTimeDesc(roomId);
-        return messages.stream()
+    public List<MessageInfo> getAllMessageById(Long roomId, Pageable pageable) {
+        var messages = chatMessageRepository.findByRoomIdOrderBySendTimeAsc(roomId, pageable);
+        return messages.getContent().stream()
                 .map(MessageInfo::from)
                 .collect(Collectors.toList());
     }
