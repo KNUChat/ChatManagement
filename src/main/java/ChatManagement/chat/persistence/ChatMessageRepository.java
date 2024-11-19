@@ -1,11 +1,12 @@
 package ChatManagement.chat.persistence;
 
 import ChatManagement.chat.domain.Message;
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ChatMessageRepository extends JpaRepository<Message, Long> {
-    List<Message> findByRoomIdOrderBySendTimeDesc(Long roomId);
+    Page<Message> findByRoomIdOrderBySendTimeAsc(Long roomId, Pageable pageable);
 }
