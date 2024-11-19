@@ -10,7 +10,6 @@ import ChatManagement.chat.persistence.ChatMessageRepository;
 import ChatManagement.chat.persistence.ChatRoomRepository;
 import ChatManagement.global.execption.NotFoundChatRoomException;
 import ChatManagement.kafka.application.LogProducer;
-import ChatManagement.kafka.application.dto.LogMessage;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +40,14 @@ public class ChatRoomService {
     }
 
     @Transactional
-    public void sendMessage(CreateMessageCommand command) {
-        var message = command.toEntity();
-        chatMessageRepository.save(message);
-        logProducer.sendMessage(
-                LogMessage.messageLogOf(message.getMessage(), message.getRoomId(), message.getSenderId()));
+    public void sendMessages(List<CreateMessageCommand> commands) {
+        var message = commands.stream()
+                .map(CreateMessageCommand::toEntity)
+                .collect(Collectors.toList());
+        chatMessageRepository.saveAll(message);
+        log.info("Saved");
+//        logProducer.sendMessage(
+//                LogMessage.messageLogOf(message.getMessage(), message.getRoomId(), message.getSenderId()));
     }
 
     @Transactional
@@ -99,7 +101,5 @@ public class ChatRoomService {
         var waitingRooms = chatRoomRepository
                 .findRoomsByMentorIdAndRoomStatus(mentorId, RoomStatus.CHAT_WAITING, Pageable.ofSize(activateCount));
         waitingRooms.forEach(Room::activateRoom);
-
-        //TODO: 메시지 전송 시간 변경
     }
 }
